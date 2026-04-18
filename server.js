@@ -1,0 +1,16 @@
+require('dotenv').config(); 
+const express = require('express'); 
+const cors = require('cors'); 
+const { getDb } = require('./src/db'); 
+const app = express(); 
+const PORT = process.env.PORT || 3001; 
+app.use(cors()); 
+app.use(express.json()); 
+app.use('/auth', require('./src/routes/auth')); 
+app.use('/issues', require('./src/routes/issues')); 
+app.use('/announcements', require('./src/routes/announcements')); 
+app.use('/users', require('./src/routes/users')); 
+app.use('/chat', require('./src/routes/chat')); 
+app.get('/health', (req, res) => res.json({ status: 'ok' })); 
+app.use((err, req, res, next) => { console.error(err); res.status(500).json({ error: 'Internal server error' }); }); 
+getDb().then(() => { app.listen(PORT, () => { console.log('Campus API running on http://localhost:'+PORT); }); }).catch(console.error); 
