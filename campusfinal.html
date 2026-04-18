@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Campus Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #16161f;
+  --bg4: #1c1c28;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f0f5;
+  --text2: #9090a8;
+  --text3: #5a5a72;
+  --accent: #6c63ff;
+  --accent2: #8b83ff;
+  --accent-glow: rgba(108,99,255,0.3);
+  --green: #10d98a;
+  --green-bg: rgba(16,217,138,0.1);
+  --orange: #ff8c42;
+  --orange-bg: rgba(255,140,66,0.1);
+  --blue: #4da6ff;
+  --blue-bg: rgba(77,166,255,0.1);
+  --red: #ff5b5b;
+  --red-bg: rgba(255,91,91,0.1);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --sidebar: 220px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+h1,h2,h3,.logo-text { font-family: 'Space Grotesk', sans-serif; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* AUTH */
+.auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); position: relative; overflow: hidden; }
+.auth-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.auth-orb1 { width: 500px; height: 500px; background: rgba(108,99,255,0.15); top: -150px; right: -100px; }
+.auth-orb2 { width: 400px; height: 400px; background: rgba(16,217,138,0.08); bottom: -100px; left: -100px; }
+.auth-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: 20px; padding: 2.25rem; width: 100%; max-width: 420px; position: relative; z-index: 1; animation: slideUp 0.4s ease; }
+@keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+.auth-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
+.auth-icon { width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent), #a78bfa); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.auth-logo { font-size: 20px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+.auth-sub { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
+.demo-box { background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.2); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 1.25rem; font-size: 12px; color: var(--text2); line-height: 2; }
+.demo-box strong { color: var(--accent2); }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.9rem; }
+.field label { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.05em; text-transform: uppercase; }
+.field input, .field select, .field textarea { padding: 10px 14px; background: var(--bg4); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; font-family: inherit; outline: none; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+.field select { cursor: pointer; }
+.field textarea { resize: vertical; min-height: 80px; }
+.btn-primary { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.2s, transform 0.1s; margin-top: 0.25rem; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:active { transform: scale(0.99); }
+.auth-toggle { text-align: center; margin-top: 1rem; font-size: 13px; color: var(--text2); }
+.auth-toggle span { color: var(--accent2); cursor: pointer; font-weight: 500; }
+.auth-toggle span:hover { text-decoration: underline; }
+.error-msg { font-size: 12px; color: var(--red); background: var(--red-bg); border: 1px solid rgba(255,91,91,0.2); padding: 8px 12px; border-radius: var(--radius-sm); margin-top: 8px; }
+
+/* APP SHELL */
+.app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar); flex-shrink: 0; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.25rem 0; }
+.sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 0 1.25rem 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+.sidebar-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), #a78bfa); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.sidebar-name { font-size: 15px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+.nav-section { padding: 0 0.75rem; margin-bottom: 1.5rem; }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; padding: 0 0.75rem; margin-bottom: 0.4rem; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; margin-bottom: 2px; }
+.nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.nav-item.active { background: rgba(108,99,255,0.15); color: var(--accent2); }
+.nav-icon { font-size: 15px; width: 20px; text-align: center; }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--accent); color: #fff; padding: 2px 7px; border-radius: 99px; }
+.sidebar-footer { margin-top: auto; padding: 1rem 1.25rem 0; border-top: 1px solid var(--border); }
+.user-pill { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #6c63ff, #10d98a); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { font-size: 11px; color: var(--text2); }
+.logout-btn { font-size: 11px; color: var(--text3); cursor: pointer; margin-top: 6px; }
+.logout-btn:hover { color: var(--red); }
+
+/* MAIN */
+.main { flex: 1; overflow-y: auto; background: var(--bg); }
+.main-header { padding: 1.5rem 2rem 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.page-title { font-size: 22px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+.page-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
+.main-content { padding: 1.25rem 2rem 3rem; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 1.5rem; }
+.stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; position: relative; overflow: hidden; transition: border-color 0.2s; }
+.stat-card:hover { border-color: var(--border2); }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.stat-card.s-orange::before { background: linear-gradient(90deg, var(--orange), transparent); }
+.stat-card.s-blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+.stat-card.s-green::before { background: linear-gradient(90deg, var(--green), transparent); }
+.stat-icon { font-size: 20px; margin-bottom: 10px; }
+.stat-num { font-size: 32px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; line-height: 1; }
+.stat-card.s-orange .stat-num { color: var(--orange); }
+.stat-card.s-blue .stat-num { color: var(--blue); }
+.stat-card.s-green .stat-num { color: var(--green); }
+.stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+/* SECTION */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.section-title { font-size: 14px; font-weight: 600; }
+.count-pill { font-size: 11px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 2px 8px; border-radius: 99px; margin-left: 8px; }
+
+/* BUTTONS */
+.btn { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; border: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-accent { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; }
+.btn-accent:hover { opacity: 0.88; }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,91,91,0.2); }
+.btn-danger:hover { background: rgba(255,91,91,0.2); }
+
+/* CARDS */
+.card-list { display: flex; flex-direction: column; gap: 10px; }
+.issue-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; transition: border-color 0.2s, transform 0.15s; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+.issue-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.issue-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.issue-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+.issue-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.meta-chip { font-size: 11px; color: var(--text3); background: var(--bg4); border: 1px solid var(--border); padding: 2px 8px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
+.issue-desc { font-size: 13px; color: var(--text2); margin-top: 10px; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 10px; }
+.issue-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* BADGE */
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
+.badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.badge-open { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(255,140,66,0.25); }
+.badge-open::before { background: var(--orange); }
+.badge-progress { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(77,166,255,0.25); }
+.badge-progress::before { background: var(--blue); animation: blink 1.5s infinite; }
+.badge-resolved { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,217,138,0.25); }
+.badge-resolved::before { background: var(--green); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.status-select { background: var(--bg4); border: 1px solid var(--border2); color: var(--text); font-size: 12px; padding: 5px 10px; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; outline: none; }
+.status-select:focus { border-color: var(--accent); }
+
+/* FORM */
+.form-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; animation: slideDown 0.25s ease; }
+@keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+.form-title { font-size: 15px; font-weight: 600; margin-bottom: 1.25rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-footer { display: flex; gap: 10px; margin-top: 1rem; }
+
+/* ANNOUNCEMENTS */
+.ann-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.25rem 1.25rem 1.5rem; transition: border-color 0.2s; animation: fadeIn 0.3s ease; position: relative; overflow: hidden; }
+.ann-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--accent), #a78bfa); }
+.ann-card:hover { border-color: var(--border2); }
+.ann-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.ann-content { font-size: 13px; color: var(--text2); line-height: 1.65; }
+.ann-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.ann-meta { font-size: 11px; color: var(--text3); display: flex; gap: 12px; }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 3.5rem 2rem; }
+.empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+.empty-text { font-size: 14px; color: var(--text2); font-weight: 500; }
+.empty-sub { font-size: 13px; color: var(--text3); margin-top: 4px; }
+
+/* CHATBOT */
+#chat-fab { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; background: linear-gradient(135deg, var(--accent), #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 20px rgba(108,99,255,0.45); transition: transform 0.2s, box-shadow 0.2s; font-size: 22px; }
+#chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(108,99,255,0.6); }
+#chat-window { position: fixed; bottom: 90px; right: 24px; width: 360px; height: 500px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; z-index: 1000; overflow: hidden; animation: chatIn 0.25s ease; }
+@keyframes chatIn { from { opacity:0; transform: scale(0.92) translateY(12px); } to { opacity:1; transform: scale(1) translateY(0); } }
+.chat-head { padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(139,92,246,0.08)); border-bottom: 1px solid var(--border); }
+.chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.chat-head-name { font-size: 14px; font-weight: 600; }
+.chat-head-status { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 5px; margin-top: 1px; }
+.chat-head-status::before { content:''; width:6px; height:6px; background: var(--green); border-radius:50%; display:inline-block; animation: blink 2s infinite; }
+.chat-close { color: var(--text3); cursor: pointer; font-size: 22px; margin-left: auto; line-height: 1; padding: 2px; }
+.chat-close:hover { color: var(--text); }
+#chat-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.msg-wrap { display: flex; flex-direction: column; }
+.msg-wrap.user { align-items: flex-end; }
+.bubble { max-width: 82%; font-size: 13px; line-height: 1.55; padding: 9px 13px; border-radius: 14px; }
+.bubble-bot { background: var(--bg4); color: var(--text); border-bottom-left-radius: 4px; }
+.bubble-user { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; border-bottom-right-radius: 4px; }
+.typing-wrap { display: flex; align-items: center; gap: 5px; padding: 10px 13px; background: var(--bg4); border-radius: 14px; border-bottom-left-radius: 4px; width: fit-content; }
+.dot { width: 6px; height: 6px; background: var(--text3); border-radius: 50%; animation: typingBounce 1.2s infinite; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-7px)} }
+.chat-suggestions { padding: 8px 14px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid var(--border); }
+.chip { font-size: 11px; padding: 5px 11px; background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.25); border-radius: 99px; color: var(--accent2); cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+.chip:hover { background: rgba(108,99,255,0.22); }
+.chat-input-row { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); }
+#chat-input { flex: 1; padding: 9px 13px; background: var(--bg4); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; font-family: inherit; outline: none; }
+#chat-input:focus { border-color: var(--accent); }
+#chat-input::placeholder { color: var(--text3); }
+#chat-send { width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent), #8b5cf6); border: none; border-radius: var(--radius-sm); color: #fff; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: opacity 0.15s; }
+#chat-send:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const API = 'https://campus-app-backend-production-04a9.up.railway.app';
+const state = { view:'login', user:null, token:null, issues:[], announcements:[], tab:'issues', showIssueForm:false, showAnnounceForm:false, loading:false, error:null };
+
+function setState(p){Object.assign(state,p);render();}
+
+async function api(path,opts={}){
+  const h={'Content-Type':'application/json'};
+  if(state.token) h['Authorization']='Bearer '+state.token;
+  const r=await fetch(API+path,{...opts,headers:h});
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.error||'Request failed');
+  return d;
+}
+
+async function login(email,password){
+  setState({loading:true,error:null});
+  try{
+    const d=await api('/auth/login',{method:'POST',body:JSON.stringify({email,password})});
+    state.token=d.token; state.user=d.user;
+    await loadAll(); setState({view:'app',loading:false,tab:'issues'});
+  }catch(e){setState({loading:false,error:e.message});}
+}
+
+async function register(name,email,password){
+  setState({loading:true,error:null});
+  try{
+    const d=await api('/auth/register',{method:'POST',body:JSON.stringify({name,email,password})});
+    state.token=d.token; state.user=d.user;
+    await loadAll(); setState({view:'app',loading:false,tab:'issues'});
+  }catch(e){setState({loading:false,error:e.message});}
+}
+
+async function loadAll(){
+  const[i,a]=await Promise.all([api('/issues'),api('/announcements')]);
+  state.issues=i; state.announcements=a;
+}
+
+async function createIssue(form){
+  setState({loading:true,error:null});
+  try{
+    const i=await api('/issues',{method:'POST',body:JSON.stringify(form)});
+    state.issues=[i,...state.issues]; setState({loading:false,showIssueForm:false});
+  }catch(e){setState({loading:false,error:e.message});}
+}
+
+async function updateIssue(id,patch){
+  try{
+    const u=await api('/issues/'+id,{method:'PATCH',body:JSON.stringify(patch)});
+    state.issues=state.issues.map(i=>i.id===id?{...i,...u}:i); render();
+  }catch(e){alert(e.message);}
+}
+
+async function createAnnouncement(form){
+  setState({loading:true,error:null});
+  try{
+    const a=await api('/announcements',{method:'POST',body:JSON.stringify(form)});
+    state.announcements=[a,...state.announcements]; setState({loading:false,showAnnounceForm:false});
+  }catch(e){setState({loading:false,error:e.message});}
+}
+
+async function deleteAnnouncement(id){
+  await api('/announcements/'+id,{method:'DELETE'});
+  state.announcements=state.announcements.filter(a=>a.id!==id); render();
+}
+
+function logout(){
+  Object.assign(state,{view:'login',user:null,token:null,issues:[],announcements:[],tab:'issues',showIssueForm:false,error:null});
+  chat.open=false; chat.messages=[{role:'bot',text:"Hey! 👋 I'm your Campus AI. Ask me about your issues or anything campus-related."}];
+  render();
+}
+
+function render(){
+  const r=document.getElementById('root');
+  if(state.view==='login') r.innerHTML=renderLogin(false);
+  else if(state.view==='register') r.innerHTML=renderLogin(true);
+  else r.innerHTML=renderApp();
+  attachHandlers(); renderChatUI();
+}
+
+function renderLogin(isReg){
+  return `<div class="auth-wrap">
+    <div class="auth-orb auth-orb1"></div><div class="auth-orb auth-orb2"></div>
+    <div class="auth-card">
+      <div class="auth-brand"><div class="auth-icon">🏫</div><div class="auth-logo">Campus Hub</div></div>
+      <div class="auth-sub">${isReg?'Create your student account':'Welcome back — sign in to continue'}</div>
+      <div class="demo-box"><strong>Demo accounts:</strong><br>Admin → admin@campus.edu / admin123<br>Student → student@campus.edu / student123</div>
+      ${isReg?`<div class="field"><label>Full name</label><input id="reg-name" placeholder="Your name" /></div>`:''}
+      <div class="field"><label>Email</label><input id="auth-email" type="email" placeholder="you@campus.edu" /></div>
+      <div class="field"><label>Password</label><input id="auth-pass" type="password" placeholder="••••••••" /></div>
+      ${state.error?`<div class="error-msg">${state.error}</div>`:''}
+      <button class="btn-primary" id="auth-submit">${state.loading?'Please wait…':isReg?'Create account →':'Sign in →'}</button>
+      <div class="auth-toggle">${isReg?'Have an account? <span id="toggle-auth">Sign in</span>':'New student? <span id="toggle-auth">Create account</span>'}</div>
+    </div>
+  </div>`;
+}
+
+function renderApp(){
+  const{user,tab,issues}=state;
+  const isAdmin=user?.role==='admin';
+  const open=issues.filter(i=>i.status==='OPEN').length;
+  const initials=user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  return `<div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="sidebar-icon">🏫</div><div class="sidebar-name">Campus Hub</div></div>
+      <div class="nav-section">
+        <div class="nav-label">Menu</div>
+        <div class="nav-item ${tab==='issues'?'active':''}" id="tab-issues"><span class="nav-icon">⚡</span>Issues${open>0?`<span class="nav-badge">${open}</span>`:''}</div>
+        <div class="nav-item ${tab==='announcements'?'active':''}" id="tab-announce"><span class="nav-icon">📢</span>Announcements</div>
+        ${isAdmin?`<div class="nav-item ${tab==='users'?'active':''}" id="tab-users"><span class="nav-icon">👥</span>Users</div>`:''}
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <div class="user-avatar">${initials}</div>
+          <div class="user-info"><div class="user-name">${esc(user.name)}</div><div class="user-role">${isAdmin?'✦ Admin':'Student'}</div></div>
+        </div>
+        <div class="logout-btn" id="btn-logout">← Sign out</div>
+      </div>
+    </aside>
+    <main class="main">
+      ${tab==='issues'?renderIssues(isAdmin):''}
+      ${tab==='announcements'?renderAnnouncements(isAdmin):''}
+      ${tab==='users'&&isAdmin?renderUsers():''}
+    </main>
+  </div>`;
+}
+
+function renderIssues(isAdmin){
+  const{issues,showIssueForm}=state;
+  const open=issues.filter(i=>i.status==='OPEN').length;
+  const prog=issues.filter(i=>i.status==='IN_PROGRESS').length;
+  const done=issues.filter(i=>i.status==='RESOLVED').length;
+  return `
+  <div class="main-header">
+    <div><div class="page-title">${isAdmin?'Issue Tracker':'My Issues'}</div><div class="page-sub">${isAdmin?'Manage and resolve campus issues':'Track your reported issues'}</div></div>
+    ${!isAdmin?`<button class="btn btn-accent" id="btn-new-issue">${showIssueForm?'✕ Cancel':'+ Report Issue'}</button>`:''}
+  </div>
+  <div class="main-content">
+    ${isAdmin?`<div class="stats-grid">
+      <div class="stat-card s-orange"><div class="stat-icon">🔥</div><div class="stat-num">${open}</div><div class="stat-label">Open</div></div>
+      <div class="stat-card s-blue"><div class="stat-icon">⚙️</div><div class="stat-num">${prog}</div><div class="stat-num" style="display:none"></div><div class="stat-label">In Progress</div></div>
+      <div class="stat-card s-green"><div class="stat-icon">✅</div><div class="stat-num">${done}</div><div class="stat-label">Resolved</div></div>
+    </div>`:''}
+    ${!isAdmin&&showIssueForm?`
+    <div class="form-card">
+      <div class="form-title">Report a Campus Issue</div>
+      <div class="form-grid">
+        <div class="field"><label>Title</label><input id="issue-title" placeholder="Brief title" /></div>
+        <div class="field"><label>Category</label><select id="issue-cat"><option value="">Select…</option><option>Wi-Fi / Network</option><option>Classroom</option><option>Lab Equipment</option><option>Washroom</option><option>Lighting</option><option>Security</option><option>Other</option></select></div>
+      </div>
+      <div class="field"><label>Location (optional)</label><input id="issue-loc" placeholder="e.g. Block A, Room 204" /></div>
+      <div class="field"><label>Description</label><textarea id="issue-desc" placeholder="Describe the issue in detail…"></textarea></div>
+      ${state.error?`<div class="error-msg">${state.error}</div>`:''}
+      <div class="form-footer"><button class="btn btn-accent" id="btn-submit-issue">${state.loading?'Submitting…':'Submit Issue'}</button><button class="btn btn-ghost" id="btn-cancel-issue">Cancel</button></div>
+    </div>`:''}
+    ${state.error&&!showIssueForm?`<div class="error-msg" style="margin-bottom:1rem">${state.error}</div>`:''}
+    <div class="section-header">
+      <div style="display:flex;align-items:center"><span class="section-title">${isAdmin?'All Issues':'Reported Issues'}</span><span class="count-pill">${issues.length}</span></div>
+    </div>
+    <div class="card-list">
+      ${issues.length===0?`<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No issues yet</div><div class="empty-sub">Hit "Report Issue" to get started</div></div>`:
+      issues.map(i=>`
+      <div class="issue-card">
+        <div class="issue-top">
+          <div style="flex:1"><div class="issue-title">${esc(i.title)}</div>
+            <div class="issue-meta">
+              <span class="meta-chip">📂 ${esc(i.category)}</span>
+              ${i.location?`<span class="meta-chip">📍 ${esc(i.location)}</span>`:''}
+              ${isAdmin?`<span class="meta-chip">👤 ${esc(i.student_name||'Unknown')}</span>`:''}
+              <span class="meta-chip">🕐 ${timeAgo(i.created_at)}</span>
+            </div>
+          </div>
+          <div class="issue-actions">
+            <span class="badge ${badgeClass(i.status)}">${fmtStatus(i.status)}</span>
+            ${isAdmin?`<select class="status-select" data-issue-id="${i.id}" onchange="handleStatusChange(this)"><option value="OPEN" ${i.status==='OPEN'?'selected':''}>Open</option><option value="IN_PROGRESS" ${i.status==='IN_PROGRESS'?'selected':''}>In Progress</option><option value="RESOLVED" ${i.status==='RESOLVED'?'selected':''}>Resolved</option></select>`:''}
+          </div>
+        </div>
+        <div class="issue-desc">${esc(i.description)}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderAnnouncements(isAdmin){
+  const{announcements,showAnnounceForm}=state;
+  return `
+  <div class="main-header">
+    <div><div class="page-title">Announcements</div><div class="page-sub">Campus-wide updates and notices</div></div>
+    ${isAdmin?`<button class="btn btn-accent" id="btn-new-announce">${showAnnounceForm?'✕ Cancel':'+ New Announcement'}</button>`:''}
+  </div>
+  <div class="main-content">
+    ${isAdmin&&showAnnounceForm?`
+    <div class="form-card">
+      <div class="form-title">Publish Announcement</div>
+      <div class="field"><label>Title</label><input id="ann-title" placeholder="Announcement title" /></div>
+      <div class="field"><label>Content</label><textarea id="ann-content" placeholder="Write your message…"></textarea></div>
+      ${state.error?`<div class="error-msg">${state.error}</div>`:''}
+      <div class="form-footer"><button class="btn btn-accent" id="btn-submit-ann">Publish</button><button class="btn btn-ghost" id="btn-cancel-ann">Cancel</button></div>
+    </div>`:''}
+    <div class="section-header"><div style="display:flex;align-items:center"><span class="section-title">Latest</span><span class="count-pill">${announcements.length}</span></div></div>
+    <div class="card-list">
+      ${announcements.length===0?`<div class="empty-state"><div class="empty-icon">📣</div><div class="empty-text">No announcements yet</div></div>`:
+      announcements.map(a=>`
+      <div class="ann-card">
+        <div class="ann-title">${esc(a.title)}</div>
+        <div class="ann-content">${esc(a.content)}</div>
+        <div class="ann-footer">
+          <div class="ann-meta"><span>✍️ ${esc(a.author_name||'Admin')}</span><span>🕐 ${timeAgo(a.created_at)}</span></div>
+          ${isAdmin?`<button class="btn btn-danger" id="del-ann-${a.id}" style="padding:4px 10px;font-size:11px">Delete</button>`:''}
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderUsers(){
+  return `<div class="main-header"><div><div class="page-title">Users</div><div class="page-sub">Registered accounts</div></div></div>
+  <div class="main-content"><div class="issue-card" style="text-align:center;padding:2rem;color:var(--text2);font-size:13px">Full user management coming next sprint.</div></div>`;
+}
+
+function attachHandlers(){
+  on('toggle-auth','click',()=>setState({view:state.view==='login'?'register':'login',error:null}));
+  on('auth-submit','click',handleAuth);
+  on('btn-logout','click',logout);
+  on('tab-issues','click',()=>setState({tab:'issues',error:null}));
+  on('tab-announce','click',()=>setState({tab:'announcements',error:null}));
+  on('tab-users','click',()=>setState({tab:'users',error:null}));
+  on('btn-new-issue','click',()=>setState({showIssueForm:!state.showIssueForm,error:null}));
+  on('btn-cancel-issue','click',()=>setState({showIssueForm:false,error:null}));
+  on('btn-submit-issue','click',handleIssueSubmit);
+  on('btn-new-announce','click',()=>setState({showAnnounceForm:!state.showAnnounceForm,error:null}));
+  on('btn-cancel-ann','click',()=>setState({showAnnounceForm:false,error:null}));
+  on('btn-submit-ann','click',handleAnnounceSubmit);
+  state.announcements.forEach(a=>on('del-ann-'+a.id,'click',()=>deleteAnnouncement(a.id)));
+  ['auth-email','auth-pass','reg-name'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('keydown',e=>{if(e.key==='Enter')handleAuth();});
+  });
+}
+
+function on(id,evt,fn){const el=document.getElementById(id);if(el)el.addEventListener(evt,fn);}
+
+function handleAuth(){
+  if(state.loading)return;
+  if(state.view==='register'){
+    const name=val('reg-name'),email=val('auth-email'),pass=val('auth-pass');
+    if(!name||!email||!pass)return setState({error:'All fields required'});
+    register(name,email,pass);
+  }else{
+    const email=val('auth-email'),pass=val('auth-pass');
+    if(!email||!pass)return setState({error:'Email and password required'});
+    login(email,pass);
+  }
+}
+function handleIssueSubmit(){
+  const t=val('issue-title'),c=val('issue-cat'),d=val('issue-desc'),l=val('issue-loc');
+  if(!t||!c||!d)return setState({error:'Title, category and description required'});
+  createIssue({title:t,category:c,description:d,location:l});
+}
+function handleAnnounceSubmit(){
+  const t=val('ann-title'),c=val('ann-content');
+  if(!t||!c)return setState({error:'Title and content required'});
+  createAnnouncement({title:t,content:c});
+}
+window.handleStatusChange=function(sel){updateIssue(parseInt(sel.dataset.issueId),{status:sel.value});};
+
+/* CHATBOT */
+const chat={
+  open:false,
+  messages:[{role:'bot',text:"Hey! 👋 I'm your Campus AI. Ask me about your issues, announcements, or anything campus-related."}],
+  thinking:false
+};
+const CHIPS=["What are my open issues?","Any new announcements?","How do I report an issue?","What can you help with?"];
+
+function toggleChat(){chat.open=!chat.open;renderChatUI();if(chat.open)setTimeout(()=>{document.getElementById('chat-input')?.focus();},100);}
+
+function renderChatUI(){
+  document.getElementById('chat-fab')?.remove();
+  document.getElementById('chat-window')?.remove();
+  if(state.view!=='app')return;
+
+  const fab=document.createElement('div');
+  fab.id='chat-fab'; fab.innerHTML=chat.open?'✕':'💬'; fab.onclick=toggleChat;
+  document.body.appendChild(fab);
+  if(!chat.open)return;
+
+  const w=document.createElement('div');
+  w.id='chat-window';
+  w.innerHTML=`
+    <div class="chat-head">
+      <div class="chat-avatar">🤖</div>
+      <div style="flex:1"><div class="chat-head-name">Campus AI</div><div class="chat-head-status">Online</div></div>
+      <span class="chat-close" onclick="toggleChat()">×</span>
+    </div>
+    <div id="chat-msgs">
+      ${chat.messages.map(m=>m.role==='bot'
+        ?`<div class="msg-wrap"><div class="bubble bubble-bot">${m.text}</div></div>`
+        :`<div class="msg-wrap user"><div class="bubble bubble-user">${esc(m.text)}</div></div>`
+      ).join('')}
+      ${chat.thinking?`<div class="msg-wrap"><div class="typing-wrap"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`:''}
+    </div>
+    ${chat.messages.length<=1?`<div class="chat-suggestions">${CHIPS.map(c=>`<span class="chip" onclick="sendChat('${c}')">${c}</span>`).join('')}</div>`:''}
+    <div class="chat-input-row">
+      <input id="chat-input" placeholder="Ask anything…" />
+      <button id="chat-send">↑</button>
+    </div>`;
+  document.body.appendChild(w);
+
+  document.getElementById('chat-send').onclick=()=>{const v=document.getElementById('chat-input').value.trim();if(v)sendChat(v);};
+  document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'){const v=e.target.value.trim();if(v)sendChat(v);}});
+  const msgs=document.getElementById('chat-msgs');
+  if(msgs)msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function sendChat(text){
+  if(chat.thinking)return;
+  chat.messages.push({role:'user',text}); chat.thinking=true; renderChatUI();
+  const history=chat.messages.slice(0,-1).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.text}));
+  try{
+    const r=await fetch('https://campus-app-backend-production-04a9.up.railway.app/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:buildCtx(),messages:[...history,{role:'user',content:text}]})});
+    const d=await r.json();
+    chat.messages.push({role:'bot',text:d.content?.[0]?.text||"Sorry, couldn't get a response."});
+  }catch(e){chat.messages.push({role:'bot',text:"Connection error. Is the backend running?"});}
+  chat.thinking=false; renderChatUI();
+}
+
+
+function buildCtx(){
+  const u=state.user;
+  const my=state.issues.filter(i=>!u||i.student_id===u.id||u.role==='admin');
+  return `You are a helpful campus assistant for Campus Hub.
+User: ${u?`${u.name} (${u.role})`:'Guest'}
+Issues: ${my.length===0?'None':my.map(i=>`[${i.status}] ${i.title} (${i.category}) - ${i.description}`).join(' | ')}
+Announcements: ${state.announcements.length===0?'None':state.announcements.map(a=>`Title: "${a.title}", Details: "${a.content}"`).join(' | ')}
+Answer ONLY based on the above data. If you don't have the information say "I don't have that information, please check with your admin."`;
+}
+
+function val(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function badgeClass(s){return s==='OPEN'?'badge-open':s==='IN_PROGRESS'?'badge-progress':'badge-resolved';}
+function fmtStatus(s){return s==='IN_PROGRESS'?'In Progress':s[0]+s.slice(1).toLowerCase();}
+function timeAgo(ts){
+  if(!ts)return '';
+  const d=Math.floor((new Date()-new Date(ts))/1000);
+  if(d<60)return 'just now';
+  if(d<3600)return Math.floor(d/60)+'m ago';
+  if(d<86400)return Math.floor(d/3600)+'h ago';
+  return Math.floor(d/86400)+'d ago';
+}
+
+render();
+</script>
+</body>
+</html>
