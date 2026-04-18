@@ -4,7 +4,11 @@ const cors = require('cors');
 const { getDb } = require('./src/db'); 
 const app = express(); 
 const PORT = process.env.PORT || 3001; 
-app.use(cors()); 
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+})); 
 app.use(express.json()); 
 app.use('/auth', require('./src/routes/auth')); 
 app.use('/issues', require('./src/routes/issues')); 
